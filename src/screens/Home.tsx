@@ -1,16 +1,56 @@
-import { View, Text, Button } from 'react-native'
+import { View, ScrollView, StyleSheet, StatusBar } from 'react-native'
+import { MovieListProps } from '../types/app'
 import React from 'react'
+import MovieList from '../components/movies/MovieList'
 
-const Home = ({ navigation }: any): any => {
+const movieList: MovieListProps[] = [
+  {
+    title: 'Now Playing in Theater',
+    path: 'movie/now_playing?language=en-US&page=1',
+    coverType: 'backdrop',
+  },
+  {
+    title: 'Upcoming Movies',
+    path: 'movie/upcoming?language=en-US&page=1',
+    coverType: 'poster',
+  },
+  {
+    title: 'Top Rated Movies',
+    path: 'movie/top_rated?language=en-US&page=1',
+    coverType: 'poster',
+  },
+  {
+    title: 'Popular Movies',
+    path: 'movie/popular?language=en-US&page=1',
+    coverType: 'poster',
+  },
+]
+
+const Home = ({ navigation }: any): JSX.Element => {
   return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Home</Text>
-      <Button
-        title="Pergi Ke Movie Detail"
-        onPress={() => navigation.navigate('MovieDetail', { id: 1 })}
-      />
-    </View>
+    <ScrollView>
+      <View style={styles.container}>
+        {movieList.map((item) => (
+          <MovieList
+            title={item.title}
+            path={item.path}
+            coverType={item.coverType}
+            key={item.title}
+          />
+        ))}
+        <StatusBar translucent={false} />
+      </View>
+    </ScrollView>
   )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    marginTop: StatusBar.currentHeight ?? 32,
+    alignItems: 'center',
+    justifyContent: 'center',
+    rowGap: 16,
+  },
+})
 
 export default Home
