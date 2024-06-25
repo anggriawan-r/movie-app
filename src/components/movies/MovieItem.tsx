@@ -11,15 +11,23 @@ import { MovieItemProps } from '../../types/app'
 import { FontAwesome } from '@expo/vector-icons'
 import { useNavigation, StackActions } from '@react-navigation/native'
 
-const MovieItem = ({ movie, size, coverType }: MovieItemProps): JSX.Element => {
+const MovieItem = ({
+  movie,
+  size,
+  coverType,
+  containerStyles,
+}: MovieItemProps): JSX.Element => {
   const navigation = useNavigation()
   const pushAction = StackActions.push('MovieDetail', { id: movie.id })
 
   return (
-    <TouchableOpacity onPress={() => navigation.dispatch(pushAction)}>
+    <TouchableOpacity
+      style={containerStyles}
+      onPress={() => navigation.dispatch(pushAction)}
+    >
       <ImageBackground
         resizeMode="cover"
-        style={[size, styles.backgroundImage]}
+        style={size}
         imageStyle={styles.backgroundImageStyle}
         source={{
           uri: `https://image.tmdb.org/t/p/w500${
@@ -44,9 +52,6 @@ const MovieItem = ({ movie, size, coverType }: MovieItemProps): JSX.Element => {
 }
 
 const styles = StyleSheet.create({
-  backgroundImage: {
-    marginRight: 4,
-  },
   backgroundImageStyle: {
     borderRadius: 8,
   },
