@@ -1,3 +1,5 @@
+import { DimensionValue, StyleProp, ViewStyle } from 'react-native'
+
 export type MovieListProps = {
   title: string
   path: string
@@ -6,8 +8,9 @@ export type MovieListProps = {
 
 export type MovieItemProps = {
   movie: Movie
-  size: { width: number; height: number }
+  size?: { width?: DimensionValue; height?: DimensionValue }
   coverType: 'poster' | 'backdrop'
+  containerStyles?: StyleProp<ViewStyle>
 }
 
 export type Movie = {

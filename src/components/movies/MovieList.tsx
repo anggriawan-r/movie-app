@@ -70,6 +70,7 @@ const MovieList = ({
         }}
         showsHorizontalScrollIndicator={false}
         horizontal
+        contentContainerStyle={{ gap: 4 }}
         data={movies}
         renderItem={({ item }) => (
           <MovieItem
@@ -92,11 +93,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   purpleLabel: {
-    width: 20,
-    height: 40,
+    width: 10,
+    height: 25,
     borderRadius: 20,
     backgroundColor: '#8978A4',
-    marginRight: 12,
+    marginRight: 8,
   },
   title: {
     fontSize: 20,

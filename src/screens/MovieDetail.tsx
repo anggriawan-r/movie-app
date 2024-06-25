@@ -6,6 +6,8 @@ import {
   ImageBackground,
   StyleSheet,
   ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native'
 import { days, months, Movie, MovieInfo } from '../types/app'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -13,6 +15,9 @@ import { FontAwesome } from '@expo/vector-icons'
 import MovieList from '../components/movies/MovieList'
 import { NativeStackScreenProps } from '@react-navigation/native-stack'
 import { HomeStackNavigationProps } from '../navigations/HomeStackNavigation'
+import { removeFavorite } from '../lib/removeFavorite'
+import { addFavorite } from '../lib/addFavorite'
+import { checkIsFavorite } from '../lib/checkIsFavorite'
 
 const MovieInfoItem = ({
   label,
@@ -41,6 +46,7 @@ const MovieInfoItem = ({
 type Props = NativeStackScreenProps<HomeStackNavigationProps, 'MovieDetail'>
 
 const MovieDetail = ({ route }: Props) => {
+  const [isFavorite, setIsFavorite] = useState(false)
   const [movie, setMovies] = useState<Movie>()
   const { id } = route.params
 
@@ -60,21 +66,24 @@ const MovieDetail = ({ route }: Props) => {
 
   useEffect(() => {
     getMovie()
-  }, [])
+    if (movie) {
+      checkIsFavorite(movie?.id, setIsFavorite)
+    }
+  }, [movie])
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        {movie && (
-          <>
+    <>
+      {movie && (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.container}>
             <ImageBackground
               resizeMode="cover"
               style={{
                 width: '100%',
-                height: 250,
+                height: 300,
               }}
               source={{
-                uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}`,
+                uri: `https://image.tmdb.org/t/p/w500${movie.backdrop_path}`,
               }}
             >
               <LinearGradient
@@ -82,12 +91,36 @@ const MovieDetail = ({ route }: Props) => {
                 locations={[0.6, 0.8]}
                 style={styles.gradientStyle}
               >
-                <Text style={styles.movieTitle}>{movie.title}</Text>
-                <View style={styles.ratingContainer}>
-                  <FontAwesome name="star" size={16} color="yellow" />
-                  <Text style={styles.rating}>
-                    {movie.vote_average.toFixed(1)}
-                  </Text>
+                <View
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <View>
+                    <Text style={styles.movieTitle}>{movie.title}</Text>
+                    <View style={styles.ratingContainer}>
+                      <FontAwesome name="star" size={12} color="yellow" />
+                      <Text style={styles.rating}>
+                        {movie.vote_average.toFixed(1)}
+                      </Text>
+                    </View>
+                  </View>
+                  <TouchableOpacity
+                    onPress={() => {
+                      isFavorite
+                        ? removeFavorite(movie.id, setIsFavorite)
+                        : addFavorite(movie, setIsFavorite)
+                    }}
+                  >
+                    <FontAwesome
+                      name={isFavorite ? 'heart' : 'heart-o'}
+                      size={24}
+                      color="pink"
+                    />
+                  </TouchableOpacity>
                 </View>
               </LinearGradient>
             </ImageBackground>
@@ -120,19 +153,27 @@ const MovieDetail = ({ route }: Props) => {
                 </View>
               </View>
             </View>
-          </>
-        )}
 
-        <View style={{ marginVertical: 16 }}>
-          <MovieList
-            title="Recommendation"
-            path={`/movie/${id}/recommendations`}
-            key={movie?.title}
-            coverType="poster"
-          />
+            <View style={{ marginVertical: 16 }}>
+              <MovieList
+                title="Recommendation"
+                path={`/movie/${id}/recommendations`}
+                key={movie?.title}
+                coverType="poster"
+              />
+            </View>
+          </View>
+        </ScrollView>
+      )}
+
+      {!movie && (
+        <View
+          style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+        >
+          <ActivityIndicator size={48} />
         </View>
-      </View>
-    </ScrollView>
+      )}
+    </>
   )
 }
 
@@ -158,7 +199,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
   movieTitle: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: '500',
     color: 'white',
   },
@@ -166,10 +207,10 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 8,
+    gap: 4,
   },
   rating: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: '500',
     color: 'yellow',
   },
@@ -179,8 +220,8 @@ const styles = StyleSheet.create({
     width: '100%',
     display: 'flex',
     justifyContent: 'flex-end',
-    paddingBottom: 16,
-    paddingLeft: 16,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
   },
 })
 
