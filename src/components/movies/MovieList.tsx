@@ -15,10 +15,16 @@ const coverImageSize = {
   },
 }
 
-const MovieList = ({ title, path, coverType }: MovieListProps): JSX.Element => {
+const MovieList = ({
+  title,
+  path,
+  coverType,
+}: MovieListProps): JSX.Element | null => {
   const [movies, setMovies] = useState<Movie[]>([])
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const getMovieList = async (): Promise<void> => {
+    setIsLoading(true)
     const url = `https://api.themoviedb.org/3/${path}`
     const options: RequestInit = {
       method: 'GET',
@@ -34,12 +40,22 @@ const MovieList = ({ title, path, coverType }: MovieListProps): JSX.Element => {
       setMovies(result.results)
     } catch (error) {
       console.log(error)
+    } finally {
+      setIsLoading(false)
     }
   }
 
   useEffect(() => {
     getMovieList()
   }, [])
+
+  if (isLoading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Text>Loading...</Text>
+      </View>
+    )
+  }
 
   return (
     <View>

@@ -26,7 +26,7 @@ const movieList: MovieListProps[] = [
   },
 ]
 
-const Home = ({ navigation }: any): JSX.Element => {
+const Home = (): JSX.Element => {
   return (
     <ScrollView>
       <View style={styles.container}>
@@ -38,7 +38,7 @@ const Home = ({ navigation }: any): JSX.Element => {
             key={item.title}
           />
         ))}
-        <StatusBar translucent={false} />
+        <StatusBar translucent={true} />
       </View>
     </ScrollView>
   )
@@ -46,7 +46,7 @@ const Home = ({ navigation }: any): JSX.Element => {
 
 const styles = StyleSheet.create({
   container: {
-    marginTop: StatusBar.currentHeight ?? 32,
+    marginTop: StatusBar.currentHeight! + 16,
     alignItems: 'center',
     justifyContent: 'center',
     rowGap: 16,
