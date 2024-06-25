@@ -45,3 +45,26 @@ export type Movie = {
   vote_average: number
   vote_count: number
 }
+
+export type MovieInfo = {
+  label: string
+  value: string | number | Date
+  isDate?: boolean
+}
+
+export const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'] as const
+
+export const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+] as const
